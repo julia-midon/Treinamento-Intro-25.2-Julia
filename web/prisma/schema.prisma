@@ -82,7 +82,7 @@ model Verification {
 model Categoria {
   id        String     @id @default(auto()) @map("_id") @db.ObjectId
   nome      String
-  produtos  ProdutoCategoria[]   // relação manual com tabela intermediária
+  produtos  ProdutoCategoria[]   
 
   @@map("categoria")
 }
@@ -104,12 +104,10 @@ model Compra {
   precoTotal  Float
   criadoEm    DateTime         @default(now())
 
-  // relação com o usuário (1:N)
   userId      String
   user        User             @relation(fields: [userId], references: [id])
 
-  produtos    CompraProduto[]  // relação manual com tabela intermediária
-
+  produtos    CompraProduto[]  
   @@map("compra")
 }
 

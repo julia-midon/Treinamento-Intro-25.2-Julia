@@ -1,11 +1,8 @@
-// [ARQUIVO: app/(backend)/api/categorias/route.ts]
+
 
 import { NextResponse } from "next/server";
 import { categoriaService } from "src/services/categoria.service";
 
-/**
- * Rota GET para buscar todas as categorias
- */
 export async function GET() {
   try {
     const categorias = await categoriaService.getAll();
@@ -16,9 +13,6 @@ export async function GET() {
   }
 }
 
-/**
- * Rota POST para criar uma nova categoria
- */
 export async function POST(request: Request) {
   try {
     const { nome } = await request.json();

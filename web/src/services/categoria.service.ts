@@ -1,12 +1,8 @@
-// [ARQUIVO: src/services/categoria.service.ts]
 
 import prisma from "@/lib/prisma";
 
 export const categoriaService = {
   
-  /**
-   * Busca todas as categorias.
-   */
   getAll: async () => {
     try {
       const categorias = await prisma.categoria.findMany();
@@ -17,9 +13,6 @@ export const categoriaService = {
     }
   },
 
-  /**
-   * Cria uma nova categoria.
-   */
   create: async (nome: string) => {
     try {
       const novaCategoria = await prisma.categoria.create({

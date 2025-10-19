@@ -1,16 +1,11 @@
-// [ARQUIVO: src/services/produto.service.ts]
 
 import prisma from "@/lib/prisma";
-import { Produto } from "@/generated/prisma"; // Importa o TIPO Produto
+import { Produto } from "@/generated/prisma"; 
 
-// Define um tipo para os dados de criação/update, para não repetir
-type ProdutoData = Omit<Produto, "id">; // Omit<...> remove o 'id' do tipo
+type ProdutoData = Omit<Produto, "id">; 
 
 export const produtoService = {
   
-  /**
-   * Busca todos os produtos.
-   */
   getAll: async () => {
     try {
       const produtos = await prisma.produto.findMany();
@@ -21,9 +16,6 @@ export const produtoService = {
     }
   },
 
-  /**
-   * (NOVO) Busca um produto pelo seu ID.
-   */
   getById: async (id: string) => {
     try {
       const produto = await prisma.produto.findUnique({
@@ -36,9 +28,6 @@ export const produtoService = {
     }
   },
 
-  /**
-   * (NOVO) Cria um novo produto.
-   */
   create: async (data: ProdutoData) => {
     try {
       const novoProduto = await prisma.produto.create({
@@ -51,11 +40,8 @@ export const produtoService = {
     }
   },
 
-  /**
-   * (NOVO) Atualiza um produto existente.
-   */
   update: async (id: string, data: Partial<ProdutoData>) => {
-    // Partial<...> torna todos os campos opcionais (para PUT/PATCH)
+    
     try {
       const produtoAtualizado = await prisma.produto.update({
         where: { id },
@@ -68,9 +54,6 @@ export const produtoService = {
     }
   },
 
-  /**
-   * (NOVO) Deleta um produto.
-   */
   delete: async (id: string) => {
     try {
       await prisma.produto.delete({

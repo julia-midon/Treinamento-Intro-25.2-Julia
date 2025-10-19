@@ -5,11 +5,9 @@ import ProdutoCard from "@/components/ui/ProdutoCard";
 import BarraNavegacao from "@/components/ui/BarraNavegacao";
 
 export default function Page() {
-  // Estado que armazena os produtos vindos do back-end
   const [produtos, setProdutos] = useState<any[]>([]);
   const [itensCarrinho, setItensCarrinho] = useState<{ nome: string; preco: number }[]>([]);
 
-  // Buscar produtos da API ao carregar a página
   useEffect(() => {
     fetch("/api/produtos")
       .then((res) => res.json())
@@ -17,7 +15,6 @@ export default function Page() {
       .catch((err) => console.error("Erro ao buscar produtos:", err));
   }, []);
 
-  // Adicionar/remover do carrinho
   const verificaCarrinho = (produto: { nome: string; preco: number }) => {
     setItensCarrinho((prev) => {
       const jaExiste = prev.find((p) => p.nome === produto.nome);
