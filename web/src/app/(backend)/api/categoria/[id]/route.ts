@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { categoriaService } from "src/services/categoria.service"; // Ajuste o caminho se necessário
+import { categoriaService } from "src/services/categoria.service"; 
 
-// GET /api/categorias/[id] - Buscar uma categoria
 export async function GET(request: Request, context: { params: { id: string } }) {
   try {
     const id = context.params.id;
@@ -18,7 +17,6 @@ export async function GET(request: Request, context: { params: { id: string } })
   }
 }
 
-// PUT /api/categorias/[id] - Atualizar uma categoria
 export async function PUT(request: Request, context: { params: { id: string } }) {
   try {
     const id = context.params.id;
@@ -36,13 +34,11 @@ export async function PUT(request: Request, context: { params: { id: string } })
   }
 }
 
-// DELETE /api/categorias/[id] - Deletar uma categoria
 export async function DELETE(request: Request, context: { params: { id: string } }) {
   try {
     const id = context.params.id;
     await categoriaService.delete(id);
-    
-    // Retorna 204 (No Content) que é o padrão para delete bem-sucedido
+
     return new NextResponse(null, { status: 204 }); 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Erro ao deletar categoria";
