@@ -4,8 +4,15 @@ import { useEffect, useState } from "react";
 import ProdutoCard from "@/components/ui/ProdutoCard";
 import BarraNavegacao from "@/components/ui/BarraNavegacao";
 
+interface Produto {
+  nome: string;
+  imagem: string;
+  descricao: string;
+  preco: number;
+}
+
 export default function Page() {
-  const [produtos, setProdutos] = useState<any[]>([]);
+  const [produtos, setProdutos] = useState<Produto[]>([]);
   const [itensCarrinho, setItensCarrinho] = useState<{ nome: string; preco: number }[]>([]);
 
   useEffect(() => {
