@@ -26,64 +26,14 @@ model User {
 
   createdAt  DateTime
   updatedAt  DateTime
+
   sessions   Session[]
   accounts   Account[]
+  compras    Compra[]
 
   @@map("user")
 }
 
-model Curso {
-  id        String @id @default(uuid()) @map("_id")
-  name      String
-  descricao String
-  slug      String @unique
-
-  materiasRelacionadas CursoMateriaRelacionada[]
-}
-
-model CursoMateriaRelacionada {
-  id String @id @default(uuid()) @map("_id")
-
-  curso   Curso  @relation(fields: [cursoId], references: [id])
-  cursoId String
-
-  materia   Materia @relation(fields: [materiaId], references: [id])
-  materiaId String
-
-  @@unique([cursoId, materiaId])
-}
-
-model Materia {
-  id                 String                    @id @default(uuid()) @map("_id")
-  name               String
-  descricao          String
-  cor                String
-  slug               String                    @unique
-  cursosRelacionados CursoMateriaRelacionada[]
-}
-
-model Licao {
-  id        String   @id @default(uuid()) @map("_id")
-  name      String
-  descricao String
-  archived  Boolean? @default(false)
-
-  conteudo     Conteudo[]
-}
-
-model Conteudo {
-  id       String   @id @default(uuid()) @map("_id")
-  name     String
-  type     String
-  markdown String
-  order    Int      @default(0)
-  archived Boolean? @default(false)
-
-  licao   Licao?  @relation(fields: [licaoId], references: [id])
-  licaoId String?
-}
-
-// evitar mexer daqui pra baixo:
 model Session {
   id        String   @id @map("_id")
   expiresAt DateTime
@@ -127,4 +77,58 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Categoria {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  nome      String
+  produtos  ProdutoCategoria[]   
+
+  @@map("categoria")
+}
+
+model Produto {
+  id          String               @id @default(auto()) @map("_id") @db.ObjectId
+  nome        String
+  descricao   String
+  preco       Float
+  imagem      String               
+  categorias  ProdutoCategoria[]   
+  compras     CompraProduto[]      
+
+  @@map("produto")
+}
+
+model Compra {
+  id          String           @id @default(auto()) @map("_id") @db.ObjectId
+  precoTotal  Float
+  criadoEm    DateTime         @default(now())
+
+  userId      String
+  user        User             @relation(fields: [userId], references: [id])
+
+  produtos    CompraProduto[]  
+  @@map("compra")
+}
+
+model ProdutoCategoria {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  produtoId     String
+  categoriaId   String
+
+  produto       Produto     @relation(fields: [produtoId], references: [id])
+  categoria     Categoria   @relation(fields: [categoriaId], references: [id])
+
+  @@map("produto_categoria")
+}
+
+model CompraProduto {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  compraId    String
+  produtoId   String
+
+  compra      Compra     @relation(fields: [compraId], references: [id])
+  produto     Produto    @relation(fields: [produtoId], references: [id])
+
+  @@map("compra_produto")
 }

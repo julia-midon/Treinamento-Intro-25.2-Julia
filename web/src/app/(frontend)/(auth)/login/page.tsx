@@ -1,9 +1,19 @@
+<<<<<<< HEAD
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+=======
+
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+>>>>>>> back
 export default function LoginPage() {
   const [nome, setNome] = useState("");
   const [senha, setSenha] = useState("");
@@ -15,7 +25,12 @@ export default function LoginPage() {
       setMensagem("Por favor, preencha nome e senha.");
       return;
     }
+<<<<<<< HEAD
  
+=======
+    // Salva o novo usuário no localStorage
+    // Em um app real, você checaria se o usuário já existe
+>>>>>>> back
     localStorage.setItem("usuario_cadastrado", JSON.stringify({ nome, senha }));
     setMensagem("Usuário cadastrado com sucesso! Agora você pode fazer login.");
   };
@@ -26,6 +41,10 @@ export default function LoginPage() {
       return;
     }
 
+<<<<<<< HEAD
+=======
+    // Tenta buscar o usuário cadastrado
+>>>>>>> back
     const usuarioCadastradoJSON = localStorage.getItem("usuario_cadastrado");
     if (!usuarioCadastradoJSON) {
       setMensagem("Nenhum usuário cadastrado. Por favor, cadastre-se primeiro.");
@@ -34,11 +53,21 @@ export default function LoginPage() {
 
     const usuarioCadastrado = JSON.parse(usuarioCadastradoJSON);
 
+<<<<<<< HEAD
+=======
+    // Verifica se o nome e a senha batem
+>>>>>>> back
     if (
       usuarioCadastrado.nome === nome &&
       usuarioCadastrado.senha === senha
     ) {
+<<<<<<< HEAD
       localStorage.setItem("usuario_logado", JSON.stringify({ nome }));
+=======
+      // Salva o usuário "logado" na sessão (localStorage)
+      localStorage.setItem("usuario_logado", JSON.stringify({ nome }));
+      // Redireciona para a página principal
+>>>>>>> back
       router.push("/");
     } else {
       setMensagem("Nome de usuário ou senha incorretos.");
@@ -109,4 +138,8 @@ export default function LoginPage() {
       </div>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> back

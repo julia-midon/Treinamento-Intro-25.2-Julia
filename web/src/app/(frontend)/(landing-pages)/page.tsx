@@ -1,3 +1,4 @@
+// page.tsx (Seu arquivo, CORRIGIDO)
 "use client";
 
 import { useEffect, useState } from "react";
@@ -18,12 +19,13 @@ export default function Page() {
   const [usuario, setUsuario] = useState<string | null>(null);
 
   useEffect(() => {
-  
+    // Busca os produtos
     fetch("/api/produtos")
       .then((res) => res.json())
       .then((data) => setProdutos(data))
       .catch((err) => console.error("Erro ao buscar produtos:", err));
 
+    // Verifica se há um usuário logado no localStorage.
     const usuarioLogadoJSON = localStorage.getItem('usuario_logado');
     if (usuarioLogadoJSON) {
       const usuarioLogado = JSON.parse(usuarioLogadoJSON);
@@ -43,6 +45,8 @@ export default function Page() {
     });
   };
 
+  // <-- 1. NOVA FUNÇÃO DE LOGOUT AQUI -->
+  // Esta função limpa o localStorage E o estado local do React.
   const executarLogout = () => {
     localStorage.removeItem("usuario_logado");
     setUsuario(null); 
@@ -53,15 +57,17 @@ export default function Page() {
 
   return (
     <>
+      {/* <-- 2. PASSAR A FUNÇÃO COMO PROP --> */}
       <BarraNavegacao
         totalItens={totalItens}
         totalPreco={totalPreco}
         Adicionados={itensCarrinho}
         nomeUsuario={usuario} 
-        onLogout={executarLogout} 
+        onLogout={executarLogout} // Passamos a função para o componente filho
       />
 
       <main className="min-h-screen bg-purple-300 flex flex-col items-center py-10">
+        {/* ... (Restante do seu JSX da página principal) ... */}
 
         <img
           src="/imagens/teia-com-aranha.webp"

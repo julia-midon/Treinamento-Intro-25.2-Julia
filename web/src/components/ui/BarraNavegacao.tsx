@@ -1,7 +1,12 @@
+// components/ui/BarraNavegacao.tsx (Com Logout visível)
 "use client";
 
 import { useState } from "react";
+<<<<<<< HEAD
 import { ShoppingCart, User, LogOut } from "lucide-react"; 
+=======
+import { ShoppingCart, User, LogOut } from "lucide-react"; // <-- 1. IMPORTAR ÍCONE LogOut
+>>>>>>> back
 import Link from "next/link";
 
 interface ItemCarrinho {
@@ -42,9 +47,17 @@ export default function BarraNavegacao({
           </Link>
         </div>
 
+<<<<<<< HEAD
         <div className="flex items-center gap-6"> 
           
           {nomeUsuario ? (
+=======
+        <div className="flex items-center gap-6"> {/* Aumentei o gap para espaçar os botões */}
+          
+          {/* --- 2. LÓGICA DE LOGIN/LOGOUT ATUALIZADA --- */}
+          {nomeUsuario ? (
+            // SE ESTÁ LOGADO: Mostra "Olá", o botão de logout e o carrinho
+>>>>>>> back
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
                 <User className="text-white w-5 h-5" />
@@ -63,7 +76,11 @@ export default function BarraNavegacao({
               </button>
             </div>
           ) : (
+<<<<<<< HEAD
 
+=======
+            // SE ESTÁ DESLOGADO: Mostra botão de Entrar/Cadastrar
+>>>>>>> back
             <Link 
               href="/login" 
               className="flex items-center gap-2 bg-green-100 px-4 py-2 rounded-full shadow-sm text-green-700 font-medium hover:bg-green-200"
@@ -73,6 +90,10 @@ export default function BarraNavegacao({
             </Link>
           )}
 
+<<<<<<< HEAD
+=======
+          {/* --- SEÇÃO DO CARRINHO (agora sempre ao lado) --- */}
+>>>>>>> back
           <button
             onClick={() => setAberto((prev) => !prev)}
             className="flex items-center gap-4 bg-white px-6 py-2 rounded-full shadow-sm cursor-pointer"
@@ -85,6 +106,10 @@ export default function BarraNavegacao({
           </button>
         </div>
 
+<<<<<<< HEAD
+=======
+        {/* --- 3. DROPDOWN DO CARRINHO (AGORA SEM O BOTÃO LOGOUT) --- */}
+>>>>>>> back
         {aberto && (
           <div className="absolute right-6 top-20 bg-white shadow-lg rounded-xl w-64 border border-green-200 p-4 z-50">
             <h3 className="font-semibold text-gray-800 mb-2">Meus Pedidos:</h3>
@@ -105,6 +130,11 @@ export default function BarraNavegacao({
             {Adicionados.length > 0 && (
               <div className="mt-3 text-right font-bold text-green-700">Total: R$ {totalPreco.toFixed(2)}</div>
             )}
+<<<<<<< HEAD
+=======
+            
+            {/* O botão de logout foi removido daqui! */}
+>>>>>>> back
           </div>
         )}
       </div>
