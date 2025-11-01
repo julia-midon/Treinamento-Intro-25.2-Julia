@@ -1,3 +1,4 @@
+// page.tsx (Seu arquivo, CORRIGIDO)
 "use client";
 
 import { useEffect, useState } from "react";
@@ -14,13 +15,24 @@ interface Produto {
 export default function Page() {
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [itensCarrinho, setItensCarrinho] = useState<{ nome: string; preco: number }[]>([]);
+  
+  const [usuario, setUsuario] = useState<string | null>(null);
 
   useEffect(() => {
+    // Busca os produtos
     fetch("/api/produtos")
       .then((res) => res.json())
       .then((data) => setProdutos(data))
       .catch((err) => console.error("Erro ao buscar produtos:", err));
-  }, []);
+
+    // Verifica se há um usuário logado no localStorage.
+    const usuarioLogadoJSON = localStorage.getItem('usuario_logado');
+    if (usuarioLogadoJSON) {
+      const usuarioLogado = JSON.parse(usuarioLogadoJSON);
+      setUsuario(usuarioLogado.nome);
+    }
+    
+  }, []); 
 
   const verificaCarrinho = (produto: { nome: string; preco: number }) => {
     setItensCarrinho((prev) => {
@@ -33,14 +45,30 @@ export default function Page() {
     });
   };
 
+  // <-- 1. NOVA FUNÇÃO DE LOGOUT AQUI -->
+  // Esta função limpa o localStorage E o estado local do React.
+  const executarLogout = () => {
+    localStorage.removeItem("usuario_logado");
+    setUsuario(null); 
+  };
+
   const totalItens = itensCarrinho.length;
   const totalPreco = itensCarrinho.reduce((acc, item) => acc + item.preco, 0);
 
   return (
     <>
-      <BarraNavegacao totalItens={totalItens} totalPreco={totalPreco} Adicionados={itensCarrinho} />
+      {/* <-- 2. PASSAR A FUNÇÃO COMO PROP --> */}
+      <BarraNavegacao
+        totalItens={totalItens}
+        totalPreco={totalPreco}
+        Adicionados={itensCarrinho}
+        nomeUsuario={usuario} 
+        onLogout={executarLogout} // Passamos a função para o componente filho
+      />
 
       <main className="min-h-screen bg-purple-300 flex flex-col items-center py-10">
+        {/* ... (Restante do seu JSX da página principal) ... */}
+
         <img
           src="/imagens/teia-com-aranha.webp"
           alt="Teia Halloween"
