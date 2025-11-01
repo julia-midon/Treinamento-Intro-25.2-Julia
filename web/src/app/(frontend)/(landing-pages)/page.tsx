@@ -16,7 +16,6 @@ interface ItemCarrinho extends Produto {
   quantidade: number;
 }
 
-
 export default function Page() {
   const [termoBusca, setTermoBusca] = useState("");
   const [precoMin, setPrecoMin] = useState("");
@@ -26,6 +25,7 @@ export default function Page() {
   const [usuario, setUsuario] = useState<string | null>(null);
 
   const [itensCarrinho, setItensCarrinho] = useState<ItemCarrinho[]>([]);
+  const [carrinhoCarregado, setCarrinhoCarregado] = useState(false);
 
   useEffect(() => {
     try {
@@ -36,13 +36,14 @@ export default function Page() {
     } catch (error) {
       console.error("Erro ao carregar o carrinho do localStorage", error);
     }
+    setCarrinhoCarregado(true);
   }, []); 
 
   useEffect(() => {
-    if (itensCarrinho.length > 0) {
+    if (carrinhoCarregado) {
       localStorage.setItem('carrinho', JSON.stringify(itensCarrinho));
     }
-  }, [itensCarrinho]);
+  }, [itensCarrinho, carrinhoCarregado]); 
 
   useEffect(() => {
     fetch("/api/produtos")
@@ -117,12 +118,13 @@ export default function Page() {
       />
 
       <main className="min-h-screen bg-purple-300 flex flex-col items-center py-10">
-         
+
         <h1 className="text-3xl font-bold text-gray-800 mb-8">
           Catálogo de Produtos + Especial Halloween!
         </h1>
 
-        <div className="w-full max-w-4xl bg-white/30 backdrop-blur-sm p-4 rounded-lg shadow-md mb-8 flex flex-col sm:flex-row gap-4 items-center">
+        <div className="w-full max-w-4xl bg-white/30 backdrop-blur-sm p-4 rounded-lg shadow-md mb-8 flex flex-col sm:flex-row gap-4">
+          
           <div className="flex-1 relative w-full">
             <input
               type="text"
@@ -134,27 +136,35 @@ export default function Page() {
             <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
           </div>
           
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-        <DollarSign className="text-gray-700" size={20}/>
-        <input
-          type="text"         
-          inputMode="numeric"  
-          placeholder="Min"
-          min="0"
-          value={precoMin}
-          onChange={(e) => setPrecoMin(e.target.value)}
-          className="w-full sm:w-24 px-2 py-2 rounded-lg text-black shadow-sm"
-        />
-        <span className="text-gray-700 font-medium">-</span>
-        <input
-         type="text"          
-         inputMode="numeric"  
-         placeholder="Máx"
-         min="0"
-         value={precoMax}
-         onChange={(e) => setPrecoMax(e.target.value)}
-         className="w-full sm:w-24 px-2 py-2 rounded-lg text-black shadow-sm"
-        />
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto sm:items-center">
+            
+            <div className="flex items-center gap-2 w-full">
+              <DollarSign className="text-gray-700" size={20}/>
+              <input
+                type="text"
+                inputMode="numeric"
+                placeholder="Min"
+                min="0"
+                value={precoMin}
+                onChange={(e) => setPrecoMin(e.target.value)}
+                className="w-full sm:w-24 px-2 py-2 rounded-lg text-black shadow-sm"
+              />
+            </div>
+
+            <span className="hidden sm:block text-gray-700 font-medium">-</span>
+
+            <div className="flex items-center gap-2 w-full">
+              <DollarSign className="text-gray-700 sm:hidden" size={20} style={{ opacity: 0 }}/>
+              <input
+                type="text"
+                inputMode="numeric"
+                placeholder="Max"
+                min="0"
+                value={precoMax}
+                onChange={(e) => setPrecoMax(e.target.value)}
+                className="w-full sm:w-24 px-2 py-2 rounded-lg text-black shadow-sm"
+              />
+            </div>
           </div>
         </div>
 
