@@ -1,19 +1,9 @@
-<<<<<<< HEAD
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-=======
-
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-
->>>>>>> back
 export default function LoginPage() {
   const [nome, setNome] = useState("");
   const [senha, setSenha] = useState("");
@@ -25,12 +15,7 @@ export default function LoginPage() {
       setMensagem("Por favor, preencha nome e senha.");
       return;
     }
-<<<<<<< HEAD
  
-=======
-    // Salva o novo usuário no localStorage
-    // Em um app real, você checaria se o usuário já existe
->>>>>>> back
     localStorage.setItem("usuario_cadastrado", JSON.stringify({ nome, senha }));
     setMensagem("Usuário cadastrado com sucesso! Agora você pode fazer login.");
   };
@@ -41,10 +26,6 @@ export default function LoginPage() {
       return;
     }
 
-<<<<<<< HEAD
-=======
-    // Tenta buscar o usuário cadastrado
->>>>>>> back
     const usuarioCadastradoJSON = localStorage.getItem("usuario_cadastrado");
     if (!usuarioCadastradoJSON) {
       setMensagem("Nenhum usuário cadastrado. Por favor, cadastre-se primeiro.");
@@ -53,21 +34,11 @@ export default function LoginPage() {
 
     const usuarioCadastrado = JSON.parse(usuarioCadastradoJSON);
 
-<<<<<<< HEAD
-=======
-    // Verifica se o nome e a senha batem
->>>>>>> back
     if (
       usuarioCadastrado.nome === nome &&
       usuarioCadastrado.senha === senha
     ) {
-<<<<<<< HEAD
       localStorage.setItem("usuario_logado", JSON.stringify({ nome }));
-=======
-      // Salva o usuário "logado" na sessão (localStorage)
-      localStorage.setItem("usuario_logado", JSON.stringify({ nome }));
-      // Redireciona para a página principal
->>>>>>> back
       router.push("/");
     } else {
       setMensagem("Nome de usuário ou senha incorretos.");
@@ -75,14 +46,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-purple-200 p-4">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
           Login e Cadastro
         </h1>
         
         {mensagem && (
-          <p className="mb-4 text-center text-red-500">{mensagem}</p>
+          <p className="mb-4 text-center text-green-500">{mensagem}</p>
         )}
 
         <div className="mb-4">
@@ -115,31 +86,31 @@ export default function LoginPage() {
           />
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4">
+        
+        <div className="flex flex-col gap-4">
           <button
             onClick={handleLogin}
             className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
           >
             Entrar
           </button>
+          <h5 className="mt-6 text-center text-gray-500">
+          Não possui uma conta?
+        </h5>
           <button
             onClick={handleCadastro}
             className="flex-1 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
           >
-            Cadastrar
+            Cadastre-se
           </button>
         </div>
 
         <div className="mt-6 text-center">
             <Link href="/" className="text-sm text-purple-600 hover:underline">
-              Voltar para a loja
+              Entrar sem login
             </Link>
         </div>
       </div>
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> back

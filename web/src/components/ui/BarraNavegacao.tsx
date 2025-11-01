@@ -1,12 +1,7 @@
-// components/ui/BarraNavegacao.tsx (Com Logout visível)
 "use client";
 
 import { useState } from "react";
-<<<<<<< HEAD
 import { ShoppingCart, User, LogOut } from "lucide-react"; 
-=======
-import { ShoppingCart, User, LogOut } from "lucide-react"; // <-- 1. IMPORTAR ÍCONE LogOut
->>>>>>> back
 import Link from "next/link";
 
 interface ItemCarrinho {
@@ -39,29 +34,24 @@ export default function BarraNavegacao({
 
   return (
     <nav className="bg-purple-600 shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+   
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
 
         <div className="flex items-center gap-2">
-          <Link href="/" className="text-3xl font-bold text-white">
+        
+          <Link href="/" className="text-2xl sm:text-3xl font-bold text-white">
             Loki & Company 🎃
           </Link>
         </div>
 
-<<<<<<< HEAD
-        <div className="flex items-center gap-6"> 
+        <div className="flex items-center gap-4 sm:gap-6"> 
           
           {nomeUsuario ? (
-=======
-        <div className="flex items-center gap-6"> {/* Aumentei o gap para espaçar os botões */}
-          
-          {/* --- 2. LÓGICA DE LOGIN/LOGOUT ATUALIZADA --- */}
-          {nomeUsuario ? (
-            // SE ESTÁ LOGADO: Mostra "Olá", o botão de logout e o carrinho
->>>>>>> back
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 sm:gap-6">
               <div className="flex items-center gap-2">
                 <User className="text-white w-5 h-5" />
-                <span className="text-white font-medium sm:block">
+               
+                <span className="hidden sm:block text-white font-medium">
                   Olá, {nomeUsuario}
                 </span>
               </div>
@@ -76,42 +66,35 @@ export default function BarraNavegacao({
               </button>
             </div>
           ) : (
-<<<<<<< HEAD
-
-=======
-            // SE ESTÁ DESLOGADO: Mostra botão de Entrar/Cadastrar
->>>>>>> back
             <Link 
               href="/login" 
-              className="flex items-center gap-2 bg-green-100 px-4 py-2 rounded-full shadow-sm text-green-700 font-medium hover:bg-green-200"
+             
+              className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm text-gray-800 font-medium hover:bg-gray-100"
             >
-              <User className="w-5 h-5" />
-              <span className="sm:block">Entrar / Cadastrar</span>
+              <User className="w-5 h-5 text-purple-700"/>
+              
+              <span className="hidden sm:block">Entrar / Cadastrar</span>
             </Link>
           )}
 
-<<<<<<< HEAD
-=======
-          {/* --- SEÇÃO DO CARRINHO (agora sempre ao lado) --- */}
->>>>>>> back
           <button
             onClick={() => setAberto((prev) => !prev)}
-            className="flex items-center gap-4 bg-white px-6 py-2 rounded-full shadow-sm cursor-pointer"
+            className="flex items-center gap-2 sm:gap-4 bg-white px-4 sm:px-6 py-2 rounded-full shadow-sm cursor-pointer"
           >
             <div className="flex items-center gap-2">
               <ShoppingCart className="text-purple-700 w-5 h-5" />
               <span className="text-gray-800 font-semibold">{totalItens}</span>
             </div>
-            <span className="text-purple-700 font-bold">R$ {totalPreco.toFixed(2)}</span>
+           
+            <span className="hidden sm:block text-purple-700 font-bold">
+              R$ {totalPreco.toFixed(2)}
+            </span>
           </button>
         </div>
 
-<<<<<<< HEAD
-=======
-        {/* --- 3. DROPDOWN DO CARRINHO (AGORA SEM O BOTÃO LOGOUT) --- */}
->>>>>>> back
         {aberto && (
-          <div className="absolute right-6 top-20 bg-white shadow-lg rounded-xl w-64 border border-green-200 p-4 z-50">
+         
+          <div className="absolute right-4 sm:right-6 top-20 bg-white shadow-lg rounded-xl w-64 border border-green-200 p-4 z-50">
             <h3 className="font-semibold text-gray-800 mb-2">Meus Pedidos:</h3>
             {Adicionados.length === 0 ?
               (<p className="text-gray-500 text-sm">Carrinho vazio</p>)
@@ -130,11 +113,6 @@ export default function BarraNavegacao({
             {Adicionados.length > 0 && (
               <div className="mt-3 text-right font-bold text-green-700">Total: R$ {totalPreco.toFixed(2)}</div>
             )}
-<<<<<<< HEAD
-=======
-            
-            {/* O botão de logout foi removido daqui! */}
->>>>>>> back
           </div>
         )}
       </div>
