@@ -6,7 +6,7 @@ import BarraNavegacao from "@/components/ui/BarraNavegacao";
 import { Search, DollarSign } from "lucide-react"; 
 
 interface Produto {
-  id: string; 
+  id: string;
   nome: string;
   imagem: string;
   descricao: string;
@@ -35,19 +35,16 @@ export default function Page() {
   const [precoMax, setPrecoMax] = useState("");
   const [categoriaId, setCategoriaId] = useState("");
   
- 
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
-  
-  
   const [usuario, setUsuario] = useState<Usuario | null>(null);
-
- 
   const [itensCarrinho, setItensCarrinho] = useState<ItemCarrinho[]>([]);
   const [carrinhoCarregado, setCarrinhoCarregado] = useState(false);
-  
   const [compraLoading, setCompraLoading] = useState(false);
   const [compraStatus, setCompraStatus] = useState("");
+  
+  const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
     try {
@@ -81,6 +78,8 @@ export default function Page() {
   }, []); 
 
   useEffect(() => {
+    setIsLoading(true);
+
     const params = new URLSearchParams();
     if (termoBusca) params.append('busca', termoBusca);
     if (categoriaId) params.append('categoriaId', categoriaId);
@@ -89,12 +88,22 @@ export default function Page() {
     
     fetch(`/api/produtos?${params.toString()}`)
       .then((res) => res.json())
-      .then((data) => setProdutos(data))
-      .catch((err) => console.error("Erro ao buscar produtos:", err));
+      .then((data) => {
+        setProdutos(data);
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar produtos:", err);
+        setProdutos([]); 
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
 
   }, [termoBusca, categoriaId, precoMin, precoMax]);
 
-  const adicionarAoCarrinho = (produto: Produto) => {
+  
+  
+  const adicionarAoCarrinho = (produto: Produto) => { 
     setItensCarrinho((prev) => {
       const jaExiste = prev.find((p) => p.nome === produto.nome);
       if (jaExiste) {
@@ -108,8 +117,7 @@ export default function Page() {
       }
     });
   };
-
-  const alterarQuantidade = (nome: string, delta: number) => {
+  const alterarQuantidade = (nome: string, delta: number) => { 
     setItensCarrinho((prev) => {
       return prev.map((item) => {
         if (item.nome === nome) {
@@ -119,19 +127,16 @@ export default function Page() {
       }).filter(item => item.quantidade > 0);
     });
   };
-
-  const removerItemDoCarrinho = (nome: string) => {
+  const removerItemDoCarrinho = (nome: string) => { 
     setItensCarrinho((prev) => prev.filter((item) => item.nome !== nome));
   };
-  
-  const executarLogout = () => {
+  const executarLogout = () => { 
     localStorage.removeItem("usuario_logado");
     setUsuario(null); 
   };
-
-  const handleFinalizarCompra = async () => {
+  const handleFinalizarCompra = async () => { 
     if (!usuario) {
-      setCompraStatus("Erro: Faça login para finalizar a compra!");
+      setCompraStatus("Por favor, faça login para continuar."); 
       return;
     }
     if (itensCarrinho.length === 0) {
@@ -256,10 +261,10 @@ export default function Page() {
         </div>
 
         <div className="flex flex-wrap justify-center gap-8 px-4">
-          {produtos.length === 0 ? (
-            <p className="text-gray-600 text-lg">
-              {categorias.length === 0 ? "Carregando..." : "Nenhum produto encontrado."}
-            </p>
+          {isLoading ? (
+            <p className="text-gray-600 text-lg">Carregando produtos...</p>
+          ) : produtos.length === 0 ? (
+            <p className="text-gray-600 text-lg">Nenhum produto encontrado.</p>
           ) : (
             produtos.map((produto) => (
               <ProdutoCard

@@ -49,7 +49,7 @@ export default function BarraNavegacao({
 
         <div className="flex items-center gap-2">
           <Link href="/" className="text-2xl sm:text-3xl font-bold text-white">
-            Loki & Company 🎃
+            Loki & Company 
           </Link>
         </div>
 
@@ -78,20 +78,20 @@ export default function BarraNavegacao({
               href="/login" 
               className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm text-gray-800 font-medium hover:bg-gray-100"
             >
-              <User className="w-5 h-5 text-purple-700"/>
+              <User className="w-5 h-5 text-gray-700"/>
               <span className="hidden sm:block">Entrar / Cadastrar</span>
             </Link>
           )}
 
           <button
             onClick={() => setAberto((prev) => !prev)}
-            className="flex items-center gap-2 sm:gap-4 bg-white px-4 sm:px-6 py-2 rounded-full shadow-sm cursor-pointer"
+            className="flex items-center gap-2 sm:gap-4 bg-white px-4 sm:px-6 py-2 rounded-full shadow-sm cursor-pointer hover:bg-gray-100"
           >
             <div className="flex items-center gap-2">
-              <ShoppingCart className="text-purple-700 w-5 h-5" />
+              <ShoppingCart className="text-gray-700 w-5 h-5" />
               <span className="text-gray-800 font-semibold">{totalItens}</span>
             </div>
-            <span className="hidden sm:block text-purple-700 font-bold">
+            <span className="hidden sm:block text-gray-700 font-bold">
               R$ {totalPreco.toFixed(2)}
             </span>
           </button>
@@ -158,7 +158,7 @@ export default function BarraNavegacao({
             )}
             
             {compraStatus && (
-              <p className="text-center text-sm font-medium text-blue-600 mt-3">
+              <p className="text-center text-sm font-medium text-red-600 mt-3">
                 {compraStatus}
               </p>
             )}
