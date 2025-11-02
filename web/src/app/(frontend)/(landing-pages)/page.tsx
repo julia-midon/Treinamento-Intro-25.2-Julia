@@ -6,26 +6,48 @@ import BarraNavegacao from "@/components/ui/BarraNavegacao";
 import { Search, DollarSign } from "lucide-react"; 
 
 interface Produto {
+  id: string; 
   nome: string;
   imagem: string;
   descricao: string;
   preco: number;
 }
 
+interface Categoria {
+  id: string;
+  nome: string;
+}
+
 interface ItemCarrinho extends Produto {
   quantidade: number;
 }
 
+interface Usuario {
+  id: string;
+  name: string;
+  email: string;
+}
+
 export default function Page() {
+  
   const [termoBusca, setTermoBusca] = useState("");
   const [precoMin, setPrecoMin] = useState("");
   const [precoMax, setPrecoMax] = useState("");
-
+  const [categoriaId, setCategoriaId] = useState("");
+  
+ 
   const [produtos, setProdutos] = useState<Produto[]>([]);
-  const [usuario, setUsuario] = useState<string | null>(null);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  
+  
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
 
+ 
   const [itensCarrinho, setItensCarrinho] = useState<ItemCarrinho[]>([]);
   const [carrinhoCarregado, setCarrinhoCarregado] = useState(false);
+  
+  const [compraLoading, setCompraLoading] = useState(false);
+  const [compraStatus, setCompraStatus] = useState("");
 
   useEffect(() => {
     try {
@@ -46,17 +68,31 @@ export default function Page() {
   }, [itensCarrinho, carrinhoCarregado]); 
 
   useEffect(() => {
-    fetch("/api/produtos")
+    fetch("/api/categoria") 
       .then((res) => res.json())
-      .then((data) => setProdutos(data))
-      .catch((err) => console.error("Erro ao buscar produtos:", err));
+      .then((data) => setCategorias(data))
+      .catch((err) => console.error("Erro ao buscar categorias:", err));
 
     const usuarioLogadoJSON = localStorage.getItem('usuario_logado');
     if (usuarioLogadoJSON) {
       const usuarioLogado = JSON.parse(usuarioLogadoJSON);
-      setUsuario(usuarioLogado.nome);
+      setUsuario(usuarioLogado);
     }
   }, []); 
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (termoBusca) params.append('busca', termoBusca);
+    if (categoriaId) params.append('categoriaId', categoriaId);
+    if (precoMin) params.append('precoMin', precoMin);
+    if (precoMax) params.append('precoMax', precoMax);
+    
+    fetch(`/api/produtos?${params.toString()}`)
+      .then((res) => res.json())
+      .then((data) => setProdutos(data))
+      .catch((err) => console.error("Erro ao buscar produtos:", err));
+
+  }, [termoBusca, categoriaId, precoMin, precoMax]);
 
   const adicionarAoCarrinho = (produto: Produto) => {
     setItensCarrinho((prev) => {
@@ -90,37 +126,75 @@ export default function Page() {
   
   const executarLogout = () => {
     localStorage.removeItem("usuario_logado");
-    setUsuario(null);
+    setUsuario(null); 
+  };
+
+  const handleFinalizarCompra = async () => {
+    if (!usuario) {
+      setCompraStatus("Erro: Faça login para finalizar a compra!");
+      return;
+    }
+    if (itensCarrinho.length === 0) {
+      setCompraStatus("Erro: O seu carrinho está vazio!");
+      return;
+    }
+
+    setCompraLoading(true);
+    setCompraStatus("");
+
+    const dadosCompra = {
+      userId: usuario.id,
+      precoTotal: totalPreco,
+      produtos: itensCarrinho.map(item => ({
+        produtoId: item.id,
+        quantidade: item.quantidade
+      }))
+    };
+
+    try {
+      const response = await fetch('/api/compras', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dadosCompra)
+      });
+
+      if (!response.ok) {
+        const erro = await response.json();
+        throw new Error(erro.error || "Não foi possível registar a compra.");
+      }
+      
+      setCompraStatus("Compra realizada com sucesso!");
+      setItensCarrinho([]); 
+
+    } catch (error) {
+      setCompraStatus(error instanceof Error ? error.message : "Erro desconhecido.");
+    } finally {
+      setCompraLoading(false);
+    }
   };
 
   const totalItens = itensCarrinho.reduce((acc, item) => acc + item.quantidade, 0);
   const totalPreco = itensCarrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
-
-  const produtosFiltrados = produtos.filter((produto) => {
-    const correspondeBusca = produto.nome.toLowerCase().includes(termoBusca.toLowerCase());
-    const numPrecoMin = parseFloat(precoMin);
-    const numPrecoMax = parseFloat(precoMax);
-    const correspondePrecoMin = !numPrecoMin || produto.preco >= numPrecoMin;
-    const correspondePrecoMax = !numPrecoMax || produto.preco <= numPrecoMax;
-    return correspondeBusca && correspondePrecoMin && correspondePrecoMax;
-  });
-
+  
   return (
     <>
       <BarraNavegacao
         totalItens={totalItens}
         totalPreco={totalPreco}
-        nomeUsuario={usuario}
+        nomeUsuario={usuario ? usuario.name : null} 
         onLogout={executarLogout}
         itensDoCarrinho={itensCarrinho} 
         onAlterarQuantidade={alterarQuantidade}
         onRemoverItem={removerItemDoCarrinho}
+        onFinalizarCompra={handleFinalizarCompra}
+        compraStatus={compraStatus}
+        compraLoading={compraLoading}
       />
 
       <main className="min-h-screen bg-purple-300 flex flex-col items-center py-10">
-
+        
         <h1 className="text-3xl font-bold text-gray-800 mb-8">
-          Catálogo de Produtos + Especial Halloween!
+          Catálogo de Produtos
         </h1>
 
         <div className="w-full max-w-4xl bg-white/30 backdrop-blur-sm p-4 rounded-lg shadow-md mb-8 flex flex-col sm:flex-row gap-4">
@@ -135,6 +209,19 @@ export default function Page() {
             />
             <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
           </div>
+
+          <select 
+            value={categoriaId}
+            onChange={(e) => setCategoriaId(e.target.value)}
+            className="w-full sm:w-auto px-4 py-2 rounded-lg text-black shadow-sm"
+          >
+            <option value="">Todas as categorias</option>
+            {categorias.map(categoria => (
+              <option key={categoria.id} value={categoria.id}>
+                {categoria.nome}
+              </option>
+            ))}
+          </select>
           
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto sm:items-center">
             
@@ -170,13 +257,13 @@ export default function Page() {
 
         <div className="flex flex-wrap justify-center gap-8 px-4">
           {produtos.length === 0 ? (
-            <p className="text-gray-600 text-lg">Carregando produtos...</p>
-          ) : produtosFiltrados.length === 0 ? (
-            <p className="text-gray-600 text-lg">Nenhum produto encontrado.</p>
+            <p className="text-gray-600 text-lg">
+              {categorias.length === 0 ? "Carregando..." : "Nenhum produto encontrado."}
+            </p>
           ) : (
-            produtosFiltrados.map((produto) => (
+            produtos.map((produto) => (
               <ProdutoCard
-                key={produto.nome}
+                key={produto.id}
                 nome={produto.nome}
                 imagem={produto.imagem}
                 descricao={produto.descricao}

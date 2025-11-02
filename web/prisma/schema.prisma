@@ -22,7 +22,8 @@ model User {
   emailVerified Boolean?
   image         String?
   role          Role      @default(USER)
-  // < nao mexer 
+  
+  password      String? 
 
   createdAt  DateTime
   updatedAt  DateTime
@@ -126,6 +127,7 @@ model CompraProduto {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   compraId    String
   produtoId   String
+  quantidade  Int        @default(1) 
 
   compra      Compra     @relation(fields: [compraId], references: [id])
   produto     Produto    @relation(fields: [produtoId], references: [id])

@@ -3,10 +3,7 @@
 import { useState } from "react";
 import { ShoppingCart, User, LogOut, X, Plus, Minus } from "lucide-react"; 
 import Link from "next/link";
-// A linha 'import { ItemCarrinho }' foi removida
 
-// INTERFACE DUPLICADA (como solicitado, para evitar o arquivo tipos.ts)
-// Esta interface só precisa dos campos que a BarraNavegacao usa
 interface ItemCarrinho {
   nome: string;
   preco: number;
@@ -18,10 +15,12 @@ interface BarraNavegacaoProps {
   totalPreco: number;
   nomeUsuario: string | null;
   onLogout: () => void;
-  // Agora usa a interface 'ItemCarrinho' definida acima
   itensDoCarrinho: ItemCarrinho[];
   onAlterarQuantidade: (nome: string, delta: number) => void;
   onRemoverItem: (nome: string) => void;
+  onFinalizarCompra: () => void;
+  compraStatus: string;
+  compraLoading: boolean;
 }
 
 export default function BarraNavegacao({
@@ -32,6 +31,9 @@ export default function BarraNavegacao({
   itensDoCarrinho,
   onAlterarQuantidade,
   onRemoverItem,
+  onFinalizarCompra,
+  compraStatus,
+  compraLoading,
 }: BarraNavegacaoProps) {
 
   const [aberto, setAberto] = useState(false);
@@ -52,8 +54,9 @@ export default function BarraNavegacao({
         </div>
 
         <div className="flex items-center gap-4 sm:gap-6">
+          
           {nomeUsuario ? (
-             <div className="flex items-center gap-4 sm:gap-6">
+            <div className="flex items-center gap-4 sm:gap-6">
               <div className="flex items-center gap-2">
                 <User className="text-white w-5 h-5" />
                 <span className="hidden sm:block text-white font-medium">
@@ -82,7 +85,7 @@ export default function BarraNavegacao({
 
           <button
             onClick={() => setAberto((prev) => !prev)}
-            className="flex items-center gap-2 sm:gap-4 bg-white px-4 sm:px-6 py-2 rounded-full shadow-sm cursor-pointer hover:bg-gray-100"
+            className="flex items-center gap-2 sm:gap-4 bg-white px-4 sm:px-6 py-2 rounded-full shadow-sm cursor-pointer"
           >
             <div className="flex items-center gap-2">
               <ShoppingCart className="text-purple-700 w-5 h-5" />
@@ -103,6 +106,7 @@ export default function BarraNavegacao({
             "
           >
             <h3 className="font-semibold text-gray-800 mb-2">Meus Pedidos:</h3>
+            
             {itensDoCarrinho.length === 0 ?
               (<p className="text-gray-500 text-sm">Carrinho vazio</p>)
               :
@@ -135,10 +139,28 @@ export default function BarraNavegacao({
                 ))}
               </ul>
               )}
+            
             {itensDoCarrinho.length > 0 && (
-              <div className="mt-4 text-right font-bold text-green-700">
-                Total: R$ {totalPreco.toFixed(2)}
+              <div className="mt-4">
+                <div className="flex justify-between font-bold text-green-700">
+                  <span>Total:</span>
+                  <span>R$ {totalPreco.toFixed(2)}</span>
+                </div>
+                
+                <button
+                  onClick={onFinalizarCompra}
+                  disabled={compraLoading}
+                  className="w-full bg-green-500 text-white font-bold py-2 px-4 rounded-lg mt-3 hover:bg-green-600 disabled:bg-gray-400"
+                >
+                  {compraLoading ? "A processar..." : "Finalizar Compra"}
+                </button>
               </div>
+            )}
+            
+            {compraStatus && (
+              <p className="text-center text-sm font-medium text-blue-600 mt-3">
+                {compraStatus}
+              </p>
             )}
           </div>
         )}
