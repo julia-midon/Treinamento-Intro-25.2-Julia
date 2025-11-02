@@ -9,7 +9,7 @@ interface Propriedades {
   descricao: string;
   preco: number;
   noCarrinho: boolean;
-  alteraCarrinho: (produto: { nome: string; preco: number }) => void;
+  onAdicionarAoCarrinho: () => void;
 }
 
 const ProdutoCard: React.FC<Propriedades> = ({
@@ -18,7 +18,7 @@ const ProdutoCard: React.FC<Propriedades> = ({
   descricao,
   imagem,
   noCarrinho,
-  alteraCarrinho,
+  onAdicionarAoCarrinho, 
 }) => {
   return (
     <div className="max-w-sm w-full bg-white shadow-md rounded-2xl p-6 z-5 hover:shadow-lg transition-shadow duration-300">
@@ -35,15 +35,16 @@ const ProdutoCard: React.FC<Propriedades> = ({
       <div className="mt-4 text-lg font-semibold text-green-600">
         R$ {preco.toFixed(2)}
       </div>
+
       <button
-        onClick={() => alteraCarrinho({ nome, preco })}
+        onClick={onAdicionarAoCarrinho}
         className={`mt-4 w-full font-semibold py-2 px-4 rounded-lg transition-colors cursor-pointer ${
           noCarrinho
-            ? "bg-red-500 hover:bg-red-600 text-white"
-            : "bg-green-500 hover:bg-green-600 text-white"
+            ? "bg-green-700 hover:bg-green-800 text-white" 
+            : "bg-green-500 hover:bg-green-600 text-white" 
         }`}
       >
-        {noCarrinho ? "Remover do carrinho" : "Adicionar ao carrinho"}
+        {noCarrinho ? "Adicionado" : "Adicionar ao carrinho"}
       </button>
     </div>
   );

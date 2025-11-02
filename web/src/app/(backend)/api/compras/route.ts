@@ -1,36 +1,60 @@
-
-
 import { NextResponse } from "next/server";
-import { compraService } from "src/services/compra.service";
-const MOCK_USER_ID = "julia-1234"; 
+import prisma from "@/lib/prisma"; 
+interface ProdutoCompra {
+  produtoId: string;
+  quantidade: number;
+}
 
 export async function GET() {
-  try {
-    const compras = await compraService.getByUserId(MOCK_USER_ID);
-    return NextResponse.json(compras);
+ try {
+
+    const MOCK_USER_ID = "julia-1234"; 
+    const compras = await prisma.compra.findMany({ 
+      where: { userId: MOCK_USER_ID }
+    });
+   return NextResponse.json(compras);
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Erro ao buscar compras";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+   const errorMessage = error instanceof Error ? error.message : "Erro ao buscar compras";
+   return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 
+
 export async function POST(request: Request) {
-  try {
-    const { produtosIds } = await request.json(); 
+   try {
+   const body = await request.json();
+    const { 
+      userId, 
+      precoTotal, 
+      produtos 
+    } = body as { 
+      userId: string, 
+      precoTotal: number, 
+      produtos: ProdutoCompra[] 
+    };
 
-    if (!produtosIds || !Array.isArray(produtosIds) || produtosIds.length === 0) {
-      return NextResponse.json({ error: "Lista de produtos (produtosIds) é obrigatória" }, { status: 400 });
-    }
+   if (!userId || !precoTotal || !produtos || produtos.length === 0) {
+    return NextResponse.json({ error: "Dados da compra inválidos (userId, precoTotal e produtos são obrigatórios)" }, { status: 400 });
+   }
 
-    const novaCompra = await compraService.create({
-      userId: MOCK_USER_ID,
-      produtosIds,
+   const novaCompra = await prisma.compra.create({
+      data: {
+        userId: userId, 
+        precoTotal: precoTotal, 
+        produtos: { 
+          create: produtos.map(produto => ({
+            produtoId: produto.produtoId,
+            quantidade: produto.quantidade 
+          }))
+        }
+      }
     });
 
-    return NextResponse.json(novaCompra, { status: 201 });
+   return NextResponse.json(novaCompra, { status: 201 });
 
   } catch (error) {
+    console.error("Erro ao criar compra:", error); 
     const errorMessage = error instanceof Error ? error.message : "Erro ao efetivar compra";
     return NextResponse.json({ error: errorMessage }, { status: 500 });
-  }
+ }
 }

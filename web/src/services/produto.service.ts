@@ -1,15 +1,55 @@
-
 import prisma from "@/lib/prisma";
-import { Produto } from "@/generated/prisma"; 
+import { Produto, Prisma } from "@/generated/prisma"; 
 
 type ProdutoData = Omit<Produto, "id">; 
 
+interface FiltrosGetAll {
+  busca?: string;
+  categoriaId?: string;
+  precoMin?: string;
+  precoMax?: string;
+}
+
 export const produtoService = {
   
-  getAll: async () => {
+  getAll: async (filtros: FiltrosGetAll = {}) => {
     try {
-      const produtos = await prisma.produto.findMany();
+      const { busca, categoriaId, precoMin, precoMax } = filtros;
+
+      const where: Prisma.ProdutoWhereInput = {};
+
+      if (busca) {
+        where.nome = { contains: busca, mode: 'insensitive' };
+      }
+
+      if (categoriaId) {
+        where.categorias = {
+          some: {
+            categoriaId: categoriaId
+          }
+        };
+      }
+
+      const precoFilter: Prisma.FloatFilter = {}; 
+
+      if (precoMin) {
+        precoFilter.gte = parseFloat(precoMin);
+      }
+
+      if (precoMax) {
+        precoFilter.lte = parseFloat(precoMax);
+      }
+
+      if (precoMin || precoMax) {
+        where.preco = precoFilter;
+      }
+      
+      const produtos = await prisma.produto.findMany({
+        where, 
+      });
+      
       return produtos;
+
     } catch (error) {
       console.error("Erro no service ao buscar produtos:", error);
       throw new Error("Não foi possível buscar os produtos.");
